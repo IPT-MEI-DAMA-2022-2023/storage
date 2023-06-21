@@ -181,6 +181,54 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /* *****************************************************************************************
+         * write and read data at Cache
+         */
+        btnSave05.setOnClickListener {
+            val directory: File = getCacheDir()
+            // define file name and location
+            val file: File = File(directory, "dataOnCache.txt")
+            Toast.makeText(this, "location: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+            // open the file
+            val fostream: FileOutputStream = FileOutputStream(file)
+            // prepare file for receive data
+            val fprint: PrintStream = PrintStream(fostream)
+            // write text at file
+            fprint.println("text stored at Cache")
+            // close stream
+            fprint.close()
+            fostream.close()
 
+            Toast.makeText(this, "cache", Toast.LENGTH_SHORT).show()
+        }
+
+        btnLoad05.setOnClickListener {
+            val directory: File = getCacheDir()
+            // define file name and location
+            val file: File = File(directory, "dataOnCache.txt")
+            // access data
+            try {
+                // open the file
+                val fi: FileInputStream = FileInputStream(file)
+                // start reading content
+                val sc: Scanner = Scanner(fi)
+                // Read first line.
+                // if there are more lines, repeat command
+                val savedText: String = sc.nextLine()
+                // if you do not have anymore things to read, close file
+                sc.close()
+                fi.close()
+
+                // show data on screen
+                Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show()
+
+            } catch (e: FileNotFoundException) {
+                Toast.makeText(
+                    this,
+                    "Error: There is no file at Cache",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     } // onCreate
 }
