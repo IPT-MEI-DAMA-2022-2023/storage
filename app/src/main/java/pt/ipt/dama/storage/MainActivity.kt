@@ -35,17 +35,37 @@ class MainActivity : AppCompatActivity() {
             editor.putString("Texto", "text saved in SharedPreferences")
             editor.commit()
 
-            Toast.makeText(this,"Shared data saved",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Shared data saved", Toast.LENGTH_SHORT).show()
         }
 
         btnLoad01.setOnClickListener {
             val sharedPreferences = getPreferences(MODE_PRIVATE)
-            val savedText=sharedPreferences.getString("Texto","There are no data")
+            val savedText = sharedPreferences.getString("Texto", "There are no data")
             // show the text on screen
-            Toast.makeText(this,"saved text: ${savedText}",Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "saved text: ${savedText}", Toast.LENGTH_LONG).show()
+        }
+
+
+        btnSave02.setOnClickListener {
+            // define where data is stored
+            val sharedPreferences = getSharedPreferences("text.dat", MODE_PRIVATE)
+            // define the editor to save the data
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString("Texto", "text saved in SharedPreferences IN FILE")
+            editor.commit()
+
+            Toast.makeText(this, "Shared data saved", Toast.LENGTH_SHORT).show()
+        }
+
+        btnLoad02.setOnClickListener {
+            // open the 'file' to read data on it
+            val sharedPreferences = getSharedPreferences("text.dat",MODE_PRIVATE)
+            val savedText = sharedPreferences.getString("Texto", "There are no data")
+            // show the text on screen
+            Toast.makeText(this, "saved text: ${savedText}", Toast.LENGTH_LONG).show()
         }
 
 
 
-    }
+    } // onCreate
 }
