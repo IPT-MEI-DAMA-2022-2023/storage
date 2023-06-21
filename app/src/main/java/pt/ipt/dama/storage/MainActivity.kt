@@ -5,6 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.PrintStream
+import java.util.Scanner
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +65,63 @@ class MainActivity : AppCompatActivity() {
 
         btnLoad02.setOnClickListener {
             // open the 'file' to read data on it
-            val sharedPreferences = getSharedPreferences("text.dat",MODE_PRIVATE)
+            val sharedPreferences = getSharedPreferences("text.dat", MODE_PRIVATE)
             val savedText = sharedPreferences.getString("Texto", "There are no data")
             // show the text on screen
             Toast.makeText(this, "saved text: ${savedText}", Toast.LENGTH_LONG).show()
         }
 
+
+        /**
+         * write on internal storage
+         */
+        btnSave03.setOnClickListener {
+            val directory: File = getFilesDir()
+            // define file name and location
+            val file: File = File(directory, "data.txt")
+            Toast.makeText(this, "location: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+            // open the file
+            val fostream: FileOutputStream = FileOutputStream(file)
+            // prepare file for receive data
+            val fprint: PrintStream = PrintStream(fostream)
+            // write text at file
+            fprint.println("text stored in internal storage")
+            // close stream
+            fprint.close()
+            fostream.close()
+
+            Toast.makeText(this, "internal storage", Toast.LENGTH_SHORT).show()
+        }
+
+        btnLoad03.setOnClickListener {
+            val directory: File = getFilesDir()
+            // define file name and location
+            val file: File = File(directory, "data.txt")
+            // access data
+            try {
+                // open the file
+                val fi: FileInputStream = FileInputStream(file)
+                // start reading content
+                val sc: Scanner = Scanner(fi)
+                // Read first line.
+                // if there are more lines, repeat command
+                val savedText: String = sc.nextLine()
+                // if you do not have anymore things to read, close file
+                sc.close()
+                fi.close()
+
+                // show data on screen
+                Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show()
+
+            } catch (e: FileNotFoundException) {
+                Toast.makeText(
+                    this,
+                    "There is no file at internal storage",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        }
 
 
     } // onCreate
