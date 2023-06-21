@@ -3,6 +3,7 @@ package pt.ipt.dama.storage
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.widget.Button
 import android.widget.Toast
 import java.io.File
@@ -32,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         val btnSave05: Button = findViewById(R.id.btnSave5)
         val btnLoad05: Button = findViewById(R.id.btnLoad5)
 
-        /**
-         * save data to SharedPreferences
+        /*  *****************************************************************************************
+         * save and read data to SharedPreferences
          */
         btnSave01.setOnClickListener {
             val sharedPreferences = getPreferences(MODE_PRIVATE)
@@ -51,7 +52,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "saved text: ${savedText}", Toast.LENGTH_LONG).show()
         }
 
-
+        /*  *****************************************************************************************
+         * save and read data to SharedPreferences, but specify the name of file to store data
+         */
         btnSave02.setOnClickListener {
             // define where data is stored
             val sharedPreferences = getSharedPreferences("text.dat", MODE_PRIVATE)
@@ -72,8 +75,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /**
-         * write on internal storage
+        /* *****************************************************************************************
+         * write and read data on internal storage
          */
         btnSave03.setOnClickListener {
             val directory: File = getFilesDir()
@@ -120,7 +123,62 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
 
+        /*  *****************************************************************************************
+         * save and read data to external storage
+         */
+        btnSave04.setOnClickListener {
+            // read the location of external storage
+            val directory: File = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+            )
+            // define file name and location
+            val file: File = File(directory, "dataExternal.txt")
+            Toast.makeText(this, "location: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+            // open the file
+            val fostream: FileOutputStream = FileOutputStream(file)
+            // prepare file for receive data
+            val fprint: PrintStream = PrintStream(fostream)
+            // write text at file
+            fprint.println("text stored in EXTERNAL storage")
+            // close stream
+            fprint.close()
+            fostream.close()
+
+            Toast.makeText(this, "EXTERNAL storage", Toast.LENGTH_SHORT).show()
+
+        }
+
+        btnLoad04.setOnClickListener {
+            val directory: File =  Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+            )
+            // define file name and location
+            val file: File = File(directory, "dataExternal.txt")
+            // access data
+            try {
+                // open the file
+                val fi: FileInputStream = FileInputStream(file)
+                // start reading content
+                val sc: Scanner = Scanner(fi)
+                // Read first line.
+                // if there are more lines, repeat command
+                val savedText: String = sc.nextLine()
+                // if you do not have anymore things to read, close file
+                sc.close()
+                fi.close()
+
+                // show data on screen
+                Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show()
+
+            } catch (e: FileNotFoundException) {
+                Toast.makeText(
+                    this,
+                    "Error: There is no file at internal storage",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
 
